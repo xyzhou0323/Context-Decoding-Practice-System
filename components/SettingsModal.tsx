@@ -132,7 +132,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, o
                     : 'bg-[#2a2b55] border-transparent text-neuro-muted hover:border-neuro-muted'
                 }`}
               >
-                <div className="font-bold text-lg mb-1">🚀 免费体验</div>
+                <div className="font-bold text-lg mb-1">🚀 免费体验（暂关闭）</div>
                 <div className="text-xs opacity-80">系统内置 Key<br/>支持图文生成</div>
               </button>
 
@@ -170,7 +170,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, o
                   <div className="flex items-start">
                       <svg className="w-5 h-5 text-green-400 mt-0.5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                       <div>
-                          <p className="text-sm text-green-200 font-bold mb-1">已启用内置免费模式</p>
+                          <p className="text-sm text-green-200 font-bold mb-1">免费模式暂时关闭</p>
                           <p className="text-xs text-green-300/80 leading-relaxed">
                               系统自动调用内置的 Google Gemini 模型。无需配置即可开始使用。
                           </p>
