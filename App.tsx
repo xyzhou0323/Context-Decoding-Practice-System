@@ -252,8 +252,8 @@ const App: React.FC = () => {
             <div className="flex items-center space-x-2 md:space-x-4">
                 {apiConfig?.provider === 'Free' && (
                     <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-green-500/10 text-green-400 border border-green-500/20 mr-2">
-                        <span className="md:hidden">🚀 试用</span>
-                        <span className="hidden md:inline">🚀 免费体验模式</span>
+                        <span className="md:hidden">先输入API</span>
+                        <span className="hidden md:inline">🚀 请先输入您的API</span>
                     </span>
                 )}
                 <button 
