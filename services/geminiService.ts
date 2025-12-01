@@ -96,42 +96,47 @@ const getCategoryInstruction = (category: ScenarioCategory, difficulty: string, 
 
   // --- KID MODE INSTRUCTIONS ---
   if (isKidMode) {
-      const kidComplexity = difficulty === 'Hard' ? "tricky, where the friend/teacher says one thing but feels another" : "simple and clear";
+      // difficulty logic for kids
+      const kidContextDepth = difficulty === 'Hard' 
+        ? "complex, involving a little secret or a past event (e.g., 'Earlier today...')" 
+        : "immediate and simple";
+
       switch(category) {
         case 'EmotionalExpression':
             return `
-            **THEME: FEELINGS (Kid Mode)**
-            - **Focus:** Identifying if someone is happy, sad, angry, or scared, even if they are acting differently.
-            - **Example:** A friend laughing when they are actually nervous.
-            - **Goal:** Help the child understand the *real* feeling inside.
+            **THEME: THE FACE MASK (Inside vs. Outside)**
+            - **Goal:** Help the child understand that people sometimes wear an "invisible mask" to be safe or polite.
+            - **Concept:** "My face looks happy, but my tummy feels scared." OR "My voice is loud, not because I am mean, but because I am excited."
+            - **Avoid:** Saying they are "lying" or "fake". Use "Protection" or "Hiding feelings".
+            - **Example:** Laughing when falling down (to stop from crying).
             `;
         case 'Projection':
             return `
-            **THEME: GUESSING THOUGHTS (Kid Mode)**
-            - **Focus:** Understanding that what someone says might be about *their* own bad day or feelings, not about "You".
-            - **Example:** A friend says "This game is stupid" just because they are losing (they are projecting their frustration).
-            - **Goal:** Help the child realize "It's not my fault".
+            **THEME: THE MIRROR TRICK (It's about THEM, not YOU)**
+            - **Goal:** Help the child realize that mean words are often just the other person feeling bad about themselves.
+            - **Concept:** When they say "You are boring," they usually mean "I don't know how to play this game and I feel silly."
+            - **Key Lesson:** "They are describing their own cloudy weather, not you."
             `;
         case 'SocialRitual':
             return `
-            **THEME: MANNERS & POLITENESS (Kid Mode)**
-            - **Focus:** Saying things just to be nice, polite, or follow rules.
-            - **Example:** Saying "Thank you" for a gift even if you don't like it much.
-            - **Goal:** Help the child understand *why* we say these things (to be kind).
+            **THEME: INVISIBLE GIFTS (Politeness)**
+            - **Goal:** Explain "Magic Words" as ways to take care of other people's hearts.
+            - **Concept:** We say "It's yummy" to Grandma not to report a fact about the cookie, but to give her a "Thank You" hug with words.
+            - **Avoid:** Calling it "lying". Call it "Kindness".
             `;
         case 'RelationalStance':
             return `
-            **THEME: FRIENDSHIP & RULES (Kid Mode)**
-            - **Focus:** Knowing who is a best friend vs. just a classmate, and following teacher's authority.
-            - **Example:** A teacher speaking sternly means "Follow the rules now", not "I hate you".
-            - **Goal:** Help the child understand social distance and authority.
+            **THEME: DIFFERENT HATS (Rules & Roles)**
+            - **Goal:** Understanding that people wear different "hats" (Teacher Hat vs. Friend Hat).
+            - **Concept:** When the teacher says "Sit down," she isn't being mean; she is wearing her "Safety Hat" to keep everyone safe.
+            - **Key Lesson:** "It's not about being bossy, it's about the job they are doing."
             `;
         case 'ImpliedNeed':
             return `
-            **THEME: HINTS (Kid Mode)**
-            - **Focus:** Understanding what someone wants when they don't say it directly (Hidden requests).
-            - **Example:** "It's cold in here" means "Please close the window".
-            - **Goal:** Help the child figure out what the person really wants.
+            **THEME: HIDDEN TREASURE MAP (Clues)**
+            - **Goal:** Viewing hints as a fun detective game, not a confusing trap.
+            - **Concept:** "I'm cold" is a secret code for "Please close the window."
+            - **Key Lesson:** "Let's find the hidden wish inside the words!"
             `;
         default: return "";
      }
@@ -341,16 +346,25 @@ export const generateSocialScenario = async (
     : `Target Tone/Sentiment: ${selectedSentiment} (Ensure the scenario reflects this tone accurately).`;
     
     // Define Speaker Profile based on randomly selected Style
-    const profilePrompt = selectedStyle === 'DirectLiteral' 
-      ? `**SPEAKER PROFILE: DIRECT / LITERAL STYLE (Neurodivergent).** 
-         - **Trait:** Direct, Honest, Sensory-sensitive, Literal.
-         - **CONTEXT GENERATION RULE:** The 'context' field MUST include a brief background description of the speaker, explicitly mentioning their **history of social difficulties** (e.g., struggles with unwritten rules) and their use of **RRBIs** (Restricted Repetitive Behaviors/Interests) as coping mechanisms.
-         - **Task:** Generate a scenario where the speaker is being literal, info-dumping, or expressing a sensory need, but it might be perceived as "weird" by someone expecting subtext.
-         - **PHRASING STYLE:** Explain behavior as "information sharing", "honesty", or "sensory regulation".` 
-      : `**SPEAKER PROFILE: INDIRECT / SOCIAL STYLE.** 
-         - **Trait:** They rely heavily on subtext, social hierarchy, and "saving face". They rarely say exactly what they mean if it is socially uncomfortable.
-         - **Task:** Generate a scenario where the speaker implies something without saying it directly.
-         - **PHRASING STYLE (CRITICAL):** Do NOT label them. Explain behavior as "Others might express [need] indirectly... [SpeakerName] is doing exactly that".`;
+    let profilePrompt = "";
+    if (isKidMode) {
+        // Kid Profile logic
+        profilePrompt = selectedStyle === 'DirectLiteral'
+          ? `**SPEAKER: DIRECT KID.** Honest, loves rules, maybe sensitive to noise/touch. Says exactly what they mean.`
+          : `**SPEAKER: INDIRECT KID.** Shy, wants to be liked, or afraid of getting in trouble. Uses hints.`;
+    } else {
+        // Adult Profile logic
+        profilePrompt = selectedStyle === 'DirectLiteral' 
+          ? `**SPEAKER PROFILE: DIRECT / LITERAL STYLE (Neurodivergent).** 
+             - **Trait:** Direct, Honest, Sensory-sensitive, Literal.
+             - **CONTEXT GENERATION RULE:** The 'context' field MUST include a brief background description of the speaker, explicitly mentioning their **history of social difficulties** (e.g., struggles with unwritten rules) and their use of **RRBIs** (Restricted Repetitive Behaviors/Interests) as coping mechanisms.
+             - **Task:** Generate a scenario where the speaker is being literal, info-dumping, or expressing a sensory need, but it might be perceived as "weird" by someone expecting subtext.
+             - **PHRASING STYLE:** Explain behavior as "information sharing", "honesty", or "sensory regulation".` 
+          : `**SPEAKER PROFILE: INDIRECT / SOCIAL STYLE.** 
+             - **Trait:** They rely heavily on subtext, social hierarchy, and "saving face". They rarely say exactly what they mean if it is socially uncomfortable.
+             - **Task:** Generate a scenario where the speaker implies something without saying it directly.
+             - **PHRASING STYLE (CRITICAL):** Do NOT label them. Explain behavior as "Others might express [need] indirectly... [SpeakerName] is doing exactly that".`;
+    }
 
     contextPrompt = `
     Target Category: ${selectedCategory}.
@@ -371,13 +385,21 @@ export const generateSocialScenario = async (
   let kidModeInstruction = "";
   if (isKidMode) {
       kidModeInstruction = `
-      **IMPORTANT: KID MODE ACTIVE (Target Audience: Children 6-12 years old)**
-      1. **Tone:** Friendly, educational, and gentle.
-      2. **Language:** Use simple, easy-to-understand Simplified Chinese. Avoid workplace jargon or complex adult concepts.
-      3. **Contexts:** STRICTLY limit scenarios to **School**, **Playground**, **Family**, or **Friendships** among children.
-      4. **Topics:** Focusing on sharing, taking turns, following rules, understanding teacher's instructions, or dealing with a friend's feelings.
-      5. **No Adult Themes:** Do not generate scenarios about office politics, dating, or financial stress.
-      6. **Visuals:** The 'visualDescription' should ask for a child-friendly, colorful illustration (e.g., cartoon style, school setting).
+      **IMPORTANT: KID MODE ACTIVE (Target Audience: Children 6-10 years old)**
+      **LANGUAGE STYLE GUIDE (STRICT):**
+      1. **BRIDGE OF UNDERSTANDING:** The explanation must bridge the gap between "what was said" and "what was felt". Avoid viewing the behavior as "wrong" or "bad". Focus on the *Why*.
+      2. **NO NEGATIVE LABELS:** Do not use words like "Liar" (撒谎), "Naughty" (淘气), "Rude" (没礼貌), "Fake" (虚伪). Instead use "Protecting feelings", "Scared", "Overwhelmed", "Trying to be kind".
+      3. **Simple Words:** Use vocabulary suitable for a 3rd grader. No complex abstract nouns.
+      4. **Vivid & Concrete:** The 'context' should feel like a storybook. Describe colors, sounds, and simple actions.
+      5. **Friendly Tone:** Even if the scenario is about a conflict, the narrative voice must remain gentle and safe.
+      6. **Option Style:** The options must sound like what a kid would think or say to themselves.
+      7. **Explanation Style:** The 'explanation' must be very encouraging. Start with "Bingo!" or "Good try!".
+      8. **Social Function:** The 'socialFunction' field MUST be extremely simple and vivid (e.g., "想交朋友", "保护小心灵", "耳朵太吵了", "想要抱抱").
+      
+      **TOPIC CONSTRAINTS:**
+      - **School:** Dealing with teachers, recess, lunch sharing, homework.
+      - **Home:** Sibling fights over toys, dinner time, bedtime.
+      - **Play:** Winning/Losing games, sharing, taking turns.
       `;
   }
 
@@ -391,12 +413,12 @@ export const generateSocialScenario = async (
 
   **CRITICAL:** 
   1. The correct answer must explain the *Speaker's Internal State / Intent* based on their Communication Style (${selectedStyle}).
-  2. The 'socialFunction' field MUST be a concise phrase in SIMPLIFIED CHINESE (e.g., "寻求认同", "建立边界", "感官调节").
+  2. The 'socialFunction' field MUST be a concise phrase in SIMPLIFIED CHINESE.
   ${difficulty === 'Hard' ? "For Hard mode, the options MUST reference the specific interaction history." : ""}
   
   **STRICT OPTION GENERATION RULES:** 
   1. **Length Matching:** ALL options (correct and incorrect) must be detailed, psychologically plausible, and strictly of similar length (within +/- 10% character count). 
-  2. **Complexity:** Incorrect options must sound just as intelligent and use similar psychological terminology as the correct one.
+  2. **Complexity:** Incorrect options must sound just as intelligent (or for kids: just as plausible) as the correct one.
   3. **No Giveaways:** NEVER make the correct option significantly longer, more nuanced, or more specific than the distractors.
   `;
 
@@ -416,7 +438,7 @@ export const generateSocialScenario = async (
                 model: "gemini-2.5-flash",
                 config: {
                   systemInstruction: isKidMode 
-                    ? SYSTEM_INSTRUCTION.replace("Evolutionary Psychologist and Analyst", "Friendly Social Skills Coach for Children") 
+                    ? SYSTEM_INSTRUCTION.replace("Evolutionary Psychologist and Analyst", "Friendly and Gentle Social Skills Teacher for Kids") 
                     : SYSTEM_INSTRUCTION,
                   responseMimeType: "application/json",
                   responseSchema: {
